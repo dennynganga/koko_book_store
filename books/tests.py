@@ -100,7 +100,7 @@ class BookAPITest(APITestCase):
         """
         Ensures a 404 is returned when an invalid book ID is passed
         """
-        get_book_url = reverse("book_detail", kwargs={'pk': 9000})
+        get_book_url = reverse("book_detail", kwargs={"pk": 9000})
         response = self.client.get(get_book_url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

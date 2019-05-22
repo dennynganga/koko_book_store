@@ -125,7 +125,7 @@ class CustomerAPITest(APITestCase):
         """
         Ensures a 404 is returned when an invalid customer ID is passed
         """
-        get_customer_url = reverse("customer_detail", kwargs={'pk': 1002})
+        get_customer_url = reverse("customer_detail", kwargs={"pk": 1002})
         response = self.client.get(get_customer_url)
 
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -166,39 +166,93 @@ class CustomerAPITest(APITestCase):
         response = self.client.get(get_customer_rentals_url)
         self.assertEqual(len(response.data), 1)
 
-    def test_charge_correct_for_novel_after_close(self):
+    def test_charge_correct_for_novel_after_close_2_days(self):
         """
         Ensure charges for novel rentals are accurate
         """
         rental = create_test_rental(
             book=self.book1,
             customer=self.user1,
-            date_borrowed="2019-05-15 00:00:00.400952+00:00",
+            date_borrowed="2019-05-23 00:00:00.400952+00:00",
         )
         close_rental_url = reverse("close_rental", kwargs={"pk": rental.pk})
 
         data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
         response = self.client.put(close_rental_url, data=data, format="json")
 
-        self.assertEqual(response.data["amount_charged"], "15.00")
+        self.assertEqual(response.data["amount_charged"], "4.50")
         self.assertEqual(response.data["rental_status"], "Closed")
         self.assertEqual(response.data["currency"], CURRENCY)
 
-    def test_charge_correct_for_regular_after_close(self):
+    def test_charge_correct_for_novel_after_close_4_days(self):
+        """
+        Ensure charges for novel rentals are accurate
+        """
+        rental = create_test_rental(
+            book=self.book1,
+            customer=self.user1,
+            date_borrowed="2019-05-21 00:00:00.400952+00:00",
+        )
+        close_rental_url = reverse("close_rental", kwargs={"pk": rental.pk})
+
+        data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
+        response = self.client.put(close_rental_url, data=data, format="json")
+
+        self.assertEqual(response.data["amount_charged"], "6.00")
+        self.assertEqual(response.data["rental_status"], "Closed")
+        self.assertEqual(response.data["currency"], CURRENCY)
+
+    def test_charge_correct_for_regular_after_close_1_day(self):
         """
         Ensure charges for regular rentals are accurate
         """
         rental = create_test_rental(
             book=self.book3,
             customer=self.user1,
-            date_borrowed="2019-05-25 00:00:00.400952+00:00",
+            date_borrowed="2019-05-24 00:00:00.400952+00:00",
         )
         close_rental_url = reverse("close_rental", kwargs={"pk": rental.pk})
 
         data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
         response = self.client.put(close_rental_url, data=data, format="json")
 
-        self.assertEqual(response.data["amount_charged"], "1.50")
+        self.assertEqual(response.data["amount_charged"], "2.00")
+        self.assertEqual(response.data["rental_status"], "Closed")
+        self.assertEqual(response.data["currency"], CURRENCY)
+
+    def test_charge_correct_for_regular_after_close_2_days(self):
+        """
+        Ensure charges for regular rentals are accurate
+        """
+        rental = create_test_rental(
+            book=self.book3,
+            customer=self.user1,
+            date_borrowed="2019-05-23 00:00:00.400952+00:00",
+        )
+        close_rental_url = reverse("close_rental", kwargs={"pk": rental.pk})
+
+        data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
+        response = self.client.put(close_rental_url, data=data, format="json")
+
+        self.assertEqual(response.data["amount_charged"], "2.00")
+        self.assertEqual(response.data["rental_status"], "Closed")
+        self.assertEqual(response.data["currency"], CURRENCY)
+
+    def test_charge_correct_for_regular_after_close_4_days(self):
+        """
+        Ensure charges for regular rentals are accurate
+        """
+        rental = create_test_rental(
+            book=self.book3,
+            customer=self.user1,
+            date_borrowed="2019-05-21 00:00:00.400952+00:00",
+        )
+        close_rental_url = reverse("close_rental", kwargs={"pk": rental.pk})
+
+        data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
+        response = self.client.put(close_rental_url, data=data, format="json")
+
+        self.assertEqual(response.data["amount_charged"], "5.00")
         self.assertEqual(response.data["rental_status"], "Closed")
         self.assertEqual(response.data["currency"], CURRENCY)
 

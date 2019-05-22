@@ -73,11 +73,24 @@ class Rental(models.Model):
             # logic for charges, depending on book type
             # might need some more love later - maybe store charges to make system more
             # robust so that users can configure prices on their own
-
-            self.amount_charged = (
-                PRICE_PER_DAY_RENTAL[self.book.book_type] * rental_days
-            )
-
+            if self.book.book_type == Book.REGULAR:
+                # Rs 1 per day for 1st 2 days, Rs 1.5 after
+                if rental_days > 2:
+                    remaining_days = rental_days - 2
+                    charge1 = 2 * 1
+                    charge2 = remaining_days * 1.5
+                    total_charge = charge1 + charge2
+                else:
+                    total_charge = 2
+            elif self.book.book_type == Book.NOVEL:
+                # minimum charge of 4.5 if days < 3
+                if rental_days >= 3:
+                    total_charge = PRICE_PER_DAY_RENTAL[Book.NOVEL] * rental_days
+                else:
+                    total_charge = 4.5
+            else:
+                total_charge = PRICE_PER_DAY_RENTAL[Book.FICTION] * rental_days
+            self.amount_charged = total_charge
             self.rental_status = self.CLOSED
 
         super(Rental, self).save()
