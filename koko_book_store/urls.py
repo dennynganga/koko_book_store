@@ -15,12 +15,31 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework_swagger.views import get_swagger_view
 
-from books import urls as books_urls
-from customers import urls as customer_urls
+from books import views as books_views
+from customers import views as customer_views
+
+schema_view = get_swagger_view(title='Koko Book Store API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('books', include(books_urls)),
-    path('customers', include(customer_urls)),
+
+    # books endpoints
+    path("books/", books_views.BookList.as_view(), name="book_list"),
+    path("books/<int:pk>/", books_views.BookDetail.as_view(), name="book_detail"),
+    path("books/<int:pk>/", books_views.BookDetail.as_view(), name="book_detail"),
+    path("rentals/<int:pk>/close/", books_views.RentalClose.as_view(), name="close_rental"),
+
+    # customers endpoints
+    path("customers/", customer_views.CustomerList.as_view(), name="customer_list"),
+    path("customers/<int:pk>/", customer_views.CustomerDetail.as_view(), name="customer_detail"),
+    path(
+        "customers/<int:pk>/rentals/",
+        customer_views.CustomerRentalList.as_view(),
+        name="customer_rental_list",
+    ),
+
+    # api docs
+    path('', schema_view),
 ]

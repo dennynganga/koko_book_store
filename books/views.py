@@ -6,40 +6,44 @@ from books.serializers import BookSerializer, CloseRentalSerializer
 
 
 class BookList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
-    """
-    Used to retrieve a list of all books
-    """
-
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
     def get(self, request, *args, **kwargs):
+        """
+        Used to retrieve a list of all books
+        """
         return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        """
+        Creates a new book
+        """
         return self.create(request, *args, **kwargs)
 
 
 class BookDetail(
     mixins.RetrieveModelMixin, mixins.UpdateModelMixin, generics.GenericAPIView
 ):
-    """
-    Gets info on a particular book, updates a book
-    """
-
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
     def get(self, request, *args, **kwargs):
+        """
+        Gets info on a particular book
+        """
         return self.retrieve(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
+        """
+        Updates a book's info
+        """
         return self.update(request, *args, **kwargs)
 
 
 class RentalClose(mixins.UpdateModelMixin, generics.GenericAPIView):
     """
-    Updates (closes) a rental
+    Closes a rental
     """
 
     queryset = Rental.objects.all()
