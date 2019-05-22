@@ -2,7 +2,7 @@
 
 This is an API for a simple book store. It allows customers to rent out books, return them and charges them appropriately.
 
-[![CircleCI](https://circleci.com/gh/dennynganga/koko_book_store.svg?style=svg)](https://circleci.com/gh/dennynganga/koko_book_store)
+[![CircleCI](https://circleci.com/gh/dennynganga/koko_book_store/tree/master.svg?style=svg&circle-token=9ebe3998c371b29a3d007394566d9831a1033ada)](https://circleci.com/gh/dennynganga/koko_book_store/tree/master)
 
 ## Installation
 
