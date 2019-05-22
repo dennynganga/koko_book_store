@@ -121,6 +121,15 @@ class CustomerAPITest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, customer_expected_json)
 
+    def test_get_non_existent_customer_returns_404(self):
+        """
+        Ensures a 404 is returned when an invalid customer ID is passed
+        """
+        get_customer_url = reverse("customer_detail", kwargs={'pk': 1002})
+        response = self.client.get(get_customer_url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_create_customer_rental(self):
         """
         Ensure a rental for a book is created for a customer

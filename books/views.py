@@ -43,7 +43,7 @@ class BookDetail(
 
 class RentalClose(mixins.UpdateModelMixin, generics.GenericAPIView):
     """
-    Closes a rental
+    Closes a rental. Simply, a book is returned to the store.
     """
 
     queryset = Rental.objects.all()

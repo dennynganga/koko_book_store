@@ -95,3 +95,12 @@ class BookAPITest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, book_expected_json)
+
+    def test_get_non_existent_book_returns_404(self):
+        """
+        Ensures a 404 is returned when an invalid book ID is passed
+        """
+        get_book_url = reverse("book_detail", kwargs={'pk': 9000})
+        response = self.client.get(get_book_url)
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

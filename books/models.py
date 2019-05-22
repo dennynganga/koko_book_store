@@ -69,9 +69,15 @@ class Rental(models.Model):
             delta = self.date_returned - self.date_borrowed
             # assuming it was borrowed in the morning and returned by evening :)
             rental_days = delta.days or 1
+
+            # logic for charges, depending on book type
+            # might need some more love later - maybe store charges to make system more
+            # robust so that users can configure prices on their own
+
             self.amount_charged = (
                 PRICE_PER_DAY_RENTAL[self.book.book_type] * rental_days
             )
+
             self.rental_status = self.CLOSED
 
         super(Rental, self).save()

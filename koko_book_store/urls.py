@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import path
 from rest_framework_swagger.views import get_swagger_view
 
 from books import views as books_views
@@ -28,6 +28,7 @@ urlpatterns = [
     path("books/", books_views.BookList.as_view(), name="book_list"),
     path("books/<int:pk>/", books_views.BookDetail.as_view(), name="book_detail"),
     path("books/<int:pk>/", books_views.BookDetail.as_view(), name="book_detail"),
+    # rentals endpoint
     path(
         "rentals/<int:pk>/close/",
         books_views.RentalClose.as_view(),
