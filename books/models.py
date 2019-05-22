@@ -11,8 +11,20 @@ class Book(models.Model):
 
     AVAILABILITY_STATUS = ((AVAILABLE, "Available"), (RENTED_OUT, "Rented Out"))
 
+    REGULAR = 'R'
+    FICTION = 'F'
+    NOVEL = 'N'
+
+    BOOK_TYPES = (
+        (REGULAR, "Regular"),
+        (FICTION, "Fiction"),
+        (NOVEL, "Novel")
+    )
+
     title = models.CharField(max_length=150)
     author = models.CharField(max_length=100)
+
+    book_type = models.CharField(max_length=2, choices=BOOK_TYPES, default=REGULAR)
 
     rental_status = models.IntegerField(choices=AVAILABILITY_STATUS, default=AVAILABLE)
 
@@ -59,8 +71,9 @@ class Rental(models.Model):
         # if available, calculate charge
         if self.date_returned and not self.amount_charged:
             delta = self.date_returned - self.date_borrowed
-            rental_days = delta.days
-            self.amount_charged = PRICE_PER_DAY_RENTAL * rental_days
+            # assuming it was borrowed in the morning and returned by evening :)
+            rental_days = delta.days or 1
+            self.amount_charged = PRICE_PER_DAY_RENTAL[self.book.book_type] * rental_days
             self.rental_status = self.CLOSED
 
         super(Rental, self).save()

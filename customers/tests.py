@@ -2,6 +2,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from books.models import Book
 from books.utils import create_test_book, create_test_rental
 from customers.models import Customer
 from customers.serializers import CustomerSerializer
@@ -21,9 +22,9 @@ class CustomerAPITest(APITestCase):
         cls.user4 = create_test_user(first_name="Olivia", last_name="Wanjiku")
 
         # create test books
-        cls.book1 = create_test_book(title="Black Leopard", author="Marlon")
-        cls.book2 = create_test_book(title="City of Girls", author="Elizabeth")
-        cls.book3 = create_test_book(title="Intro to Python", author="Dennis")
+        cls.book1 = create_test_book(title="Black Leopard", author="Marlon", book_type=Book.NOVEL)
+        cls.book2 = create_test_book(title="City of Girls", author="Elizabeth", book_type=Book.FICTION)
+        cls.book3 = create_test_book(title="Intro to Python", author="Dennis", book_type=Book.REGULAR)
 
         # create some test rentals too
         cls.rental = create_test_rental(
@@ -132,15 +133,56 @@ class CustomerAPITest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_charge_correct_after_close(self):
+    def test_charge_correct_for_novel_after_close(self):
         """
-        Ensure charges for rentals are accurate
+        Ensure charges for novel rentals are accurate
         """
-        close_rental_url = reverse("close_rental", kwargs={"pk": self.rental.pk})
+        rental = create_test_rental(
+            book=self.book1,
+            customer=self.user1,
+            date_borrowed="2019-05-15 00:00:00.400952+00:00",
+        )
+        close_rental_url = reverse("close_rental", kwargs={"pk": rental.pk})
 
         data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
         response = self.client.put(close_rental_url, data=data, format="json")
 
-        self.assertEqual(response.data["amount_charged"], "10.00")
+        self.assertEqual(response.data["amount_charged"], "15.00")
+        self.assertEqual(response.data["rental_status"], "Closed")
+        self.assertEqual(response.data["currency"], CURRENCY)
+
+    def test_charge_correct_for_regular_after_close(self):
+        """
+        Ensure charges for regular rentals are accurate
+        """
+        rental = create_test_rental(
+            book=self.book1,
+            customer=self.user1,
+            date_borrowed="2019-05-25 00:00:00.400952+00:00",
+        )
+        close_rental_url = reverse("close_rental", kwargs={"pk": rental.pk})
+
+        data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
+        response = self.client.put(close_rental_url, data=data, format="json")
+
+        self.assertEqual(response.data["amount_charged"], "1.50")
+        self.assertEqual(response.data["rental_status"], "Closed")
+        self.assertEqual(response.data["currency"], CURRENCY)
+
+    def test_charge_correct_for_fiction_after_close(self):
+        """
+        Ensure charges for fiction rentals are accurate
+        """
+        rental = create_test_rental(
+            book=self.book1,
+            customer=self.user1,
+            date_borrowed="2019-05-22 00:00:00.400952+00:00",
+        )
+        close_rental_url = reverse("close_rental", kwargs={"pk": rental.pk})
+
+        data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
+        response = self.client.put(close_rental_url, data=data, format="json")
+
+        self.assertEqual(response.data["amount_charged"], "4.50")
         self.assertEqual(response.data["rental_status"], "Closed")
         self.assertEqual(response.data["currency"], CURRENCY)

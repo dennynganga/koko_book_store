@@ -12,11 +12,11 @@ class BookAPITest(APITestCase):
     def setUpClass(cls):
         super(BookAPITest, cls).setUpClass()
 
-        create_test_book(title="Black Leopard", author="Marlon")
+        create_test_book(title="Black Leopard", author="Marlon", book_type=Book.FICTION)
         create_test_book(
-            title="Intro to Python", author="Dennis", rental_status=Book.RENTED_OUT
+            title="Intro to Python", author="Dennis", rental_status=Book.RENTED_OUT, book_type=Book.REGULAR
         )
-        create_test_book(title="City of Girls", author="Elizabeth")
+        create_test_book(title="City of Girls", author="Elizabeth", book_type=Book.NOVEL)
 
     def test_create_book(self):
         """
@@ -24,7 +24,7 @@ class BookAPITest(APITestCase):
         """
         create_book_url = reverse("book_list")
 
-        book_info = {"title": "Gingerbread", "author": "Helen"}
+        book_info = {"title": "Gingerbread", "author": "Helen", "book_type": Book.NOVEL}
 
         response = self.client.post(create_book_url, data=book_info, format="json")
 
@@ -85,6 +85,7 @@ class BookAPITest(APITestCase):
             "title": "Intro to Python",
             "author": "Dennis",
             "rental_status": "Rented Out",
+            "book_type": "Regular"
         }
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
