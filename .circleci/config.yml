@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/python:3.6.4
+      - image: circleci/python:3.6
     steps:
       - checkout
       - restore_cache:
@@ -17,8 +17,10 @@ jobs:
           paths:
             - "venv"
       - run:
+          name: Running tests
           command: |
             . venv/bin/activate
             python manage.py test
-      - store_test_results:
-          path: test-results
+      - store_artifacts:
+          path: test-reports/
+          destination: koko_book_store
