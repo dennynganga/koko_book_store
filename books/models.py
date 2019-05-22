@@ -11,15 +11,11 @@ class Book(models.Model):
 
     AVAILABILITY_STATUS = ((AVAILABLE, "Available"), (RENTED_OUT, "Rented Out"))
 
-    REGULAR = 'R'
-    FICTION = 'F'
-    NOVEL = 'N'
+    REGULAR = "R"
+    FICTION = "F"
+    NOVEL = "N"
 
-    BOOK_TYPES = (
-        (REGULAR, "Regular"),
-        (FICTION, "Fiction"),
-        (NOVEL, "Novel")
-    )
+    BOOK_TYPES = ((REGULAR, "Regular"), (FICTION, "Fiction"), (NOVEL, "Novel"))
 
     title = models.CharField(max_length=150)
     author = models.CharField(max_length=100)
@@ -73,7 +69,9 @@ class Rental(models.Model):
             delta = self.date_returned - self.date_borrowed
             # assuming it was borrowed in the morning and returned by evening :)
             rental_days = delta.days or 1
-            self.amount_charged = PRICE_PER_DAY_RENTAL[self.book.book_type] * rental_days
+            self.amount_charged = (
+                PRICE_PER_DAY_RENTAL[self.book.book_type] * rental_days
+            )
             self.rental_status = self.CLOSED
 
         super(Rental, self).save()

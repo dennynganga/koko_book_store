@@ -14,9 +14,14 @@ class BookAPITest(APITestCase):
 
         create_test_book(title="Black Leopard", author="Marlon", book_type=Book.FICTION)
         create_test_book(
-            title="Intro to Python", author="Dennis", rental_status=Book.RENTED_OUT, book_type=Book.REGULAR
+            title="Intro to Python",
+            author="Dennis",
+            rental_status=Book.RENTED_OUT,
+            book_type=Book.REGULAR,
         )
-        create_test_book(title="City of Girls", author="Elizabeth", book_type=Book.NOVEL)
+        create_test_book(
+            title="City of Girls", author="Elizabeth", book_type=Book.NOVEL
+        )
 
     def test_create_book(self):
         """
@@ -85,7 +90,7 @@ class BookAPITest(APITestCase):
             "title": "Intro to Python",
             "author": "Dennis",
             "rental_status": "Rented Out",
-            "book_type": "Regular"
+            "book_type": "Regular",
         }
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

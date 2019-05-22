@@ -20,26 +20,31 @@ from rest_framework_swagger.views import get_swagger_view
 from books import views as books_views
 from customers import views as customer_views
 
-schema_view = get_swagger_view(title='Koko Book Store API')
+schema_view = get_swagger_view(title="Koko Book Store API")
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-
+    path("admin/", admin.site.urls),
     # books endpoints
     path("books/", books_views.BookList.as_view(), name="book_list"),
     path("books/<int:pk>/", books_views.BookDetail.as_view(), name="book_detail"),
     path("books/<int:pk>/", books_views.BookDetail.as_view(), name="book_detail"),
-    path("rentals/<int:pk>/close/", books_views.RentalClose.as_view(), name="close_rental"),
-
+    path(
+        "rentals/<int:pk>/close/",
+        books_views.RentalClose.as_view(),
+        name="close_rental",
+    ),
     # customers endpoints
     path("customers/", customer_views.CustomerList.as_view(), name="customer_list"),
-    path("customers/<int:pk>/", customer_views.CustomerDetail.as_view(), name="customer_detail"),
+    path(
+        "customers/<int:pk>/",
+        customer_views.CustomerDetail.as_view(),
+        name="customer_detail",
+    ),
     path(
         "customers/<int:pk>/rentals/",
         customer_views.CustomerRentalList.as_view(),
         name="customer_rental_list",
     ),
-
     # api docs
-    path('', schema_view),
+    path("", schema_view),
 ]

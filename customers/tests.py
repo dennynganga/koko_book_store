@@ -22,14 +22,28 @@ class CustomerAPITest(APITestCase):
         cls.user4 = create_test_user(first_name="Olivia", last_name="Wanjiku")
 
         # create test books
-        cls.book1 = create_test_book(title="Black Leopard", author="Marlon", book_type=Book.NOVEL)
-        cls.book2 = create_test_book(title="City of Girls", author="Elizabeth", book_type=Book.FICTION)
-        cls.book3 = create_test_book(title="Intro to Python", author="Dennis", book_type=Book.REGULAR)
+        cls.book1 = create_test_book(
+            title="Black Leopard", author="Marlon", book_type=Book.NOVEL
+        )
+        cls.book2 = create_test_book(
+            title="City of Girls", author="Elizabeth", book_type=Book.FICTION
+        )
+        cls.book3 = create_test_book(
+            title="Intro to Python", author="Dennis", book_type=Book.REGULAR
+        )
+        cls.book4 = create_test_book(
+            title="Song of Ice and Fire", author="RR Martin", book_type=Book.FICTION
+        )
 
-        # create some test rentals too
+        # create test rentals too
         cls.rental = create_test_rental(
             book=cls.book3,
             customer=cls.user1,
+            date_borrowed="2019-05-15 00:00:00.400952+00:00",
+        )
+        cls.rental2 = create_test_rental(
+            book=cls.book4,
+            customer=cls.user2,
             date_borrowed="2019-05-15 00:00:00.400952+00:00",
         )
 
@@ -132,6 +146,16 @@ class CustomerAPITest(APITestCase):
         response = self.client.post(create_rental_url, data=data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_get_customer_rental(self):
+        """
+        Check if correct rentals are returned
+        """
+        get_customer_rentals_url = reverse(
+            "customer_rental_list", kwargs={"pk": self.user1.pk}
+        )
+        response = self.client.get(get_customer_rentals_url)
+        self.assertEqual(len(response.data), 1)
 
     def test_charge_correct_for_novel_after_close(self):
         """
