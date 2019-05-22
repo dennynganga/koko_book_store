@@ -156,7 +156,7 @@ class CustomerAPITest(APITestCase):
         Ensure charges for regular rentals are accurate
         """
         rental = create_test_rental(
-            book=self.book1,
+            book=self.book3,
             customer=self.user1,
             date_borrowed="2019-05-25 00:00:00.400952+00:00",
         )
@@ -174,7 +174,7 @@ class CustomerAPITest(APITestCase):
         Ensure charges for fiction rentals are accurate
         """
         rental = create_test_rental(
-            book=self.book1,
+            book=self.book2,
             customer=self.user1,
             date_borrowed="2019-05-22 00:00:00.400952+00:00",
         )
@@ -183,6 +183,6 @@ class CustomerAPITest(APITestCase):
         data = {"date_returned": "2019-05-25 13:46:57.249145+03:00"}
         response = self.client.put(close_rental_url, data=data, format="json")
 
-        self.assertEqual(response.data["amount_charged"], "4.50")
+        self.assertEqual(response.data["amount_charged"], "9.00")
         self.assertEqual(response.data["rental_status"], "Closed")
         self.assertEqual(response.data["currency"], CURRENCY)
