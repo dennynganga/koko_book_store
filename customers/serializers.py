@@ -14,11 +14,11 @@ class CustomerRentalSerializer(serializers.ModelSerializer):
     rental_status = serializers.CharField(
         source="get_rental_status_display", read_only=True
     )
-    book_name = serializers.CharField(source="book.name", read_only=True)
+    book_title = serializers.CharField(source="book.title", read_only=True)
 
     class Meta:
         model = Rental
-        fields = ("book", "customer_id", "rental_status", "book_name")
+        fields = ("book", "customer_id", "rental_status", "book_title")
 
     def validate_book(self, book):
         if book.is_available:
