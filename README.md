@@ -2,7 +2,7 @@
 
 This is an API for a simple book store. It allows customers to rent out books, return them and charges them appropriately.
 
-More info on the API can be found in the [docs](http://35.196.160.21:8000/)
+More info on the API can be found in the [docs](http://35.196.160.21:8001/)
 
 [![CircleCI](https://circleci.com/gh/dennynganga/koko_book_store/tree/master.svg?style=svg&circle-token=9ebe3998c371b29a3d007394566d9831a1033ada)](https://circleci.com/gh/dennynganga/koko_book_store/tree/master)
 
@@ -35,9 +35,10 @@ Please make sure to update tests as appropriate.
  PostgreSQL supports query logging and this can be used to tell which queries are being run frequently or even which ones take long to execute. From analysing this info, we can decide which responses to **cache** (depending on business requirements) so as to decrease load on the database server.
  On the same note, I'd also bring in **Elastic Search** to provide a more scalable search. From our service, items that can be indexed include books, customers and rentals, so we can find them quicker.
  Also, as our database grows, we'd introduce a technique known as **sharding**. This is where the database is partitioned into smaller, faster parts.
+ - ##### Hosting
+ This involves using a load balancer that routes requests to two or more application servers. This way, increased load is well handled.
  - ##### Session Storage
  Moving session storage to a faster, in-memory caching tool like redis or memcached, to avoid database hits while reading and writing session data.
  - ##### Running long computations offline
  Computations that take long to run should not be performed in the normal request-response cycle, so as to reduce page load times. In our case, an example would be sending a reminder email to a customer, or even generating a large CSV file that shows all active rentals. Such long-running tasks can be delegated to multiple workers. **Celery** (in combination with redis or rabbitmq) would come in handy in this.
- - ##### Hosting
- This involves using a load balancer that routes requests to two or more application servers. This way, increased load is well handled.
+ 

@@ -17,7 +17,9 @@ class CustomerModelTest(TestCase):
         Ensure that string representation of a Customer object is correct
         """
         customer = Customer(first_name="Mike", last_name="Kim")
-        self.assertEqual(str(customer), "{} {}".format(customer.first_name, customer.last_name))
+        self.assertEqual(
+            str(customer), "{} {}".format(customer.first_name, customer.last_name)
+        )
 
 
 class CustomerAPITest(APITestCase):
