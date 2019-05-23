@@ -18,10 +18,13 @@ class BookModelTest(TestCase):
         self.assertEqual(str(book), book.title)
 
     def test_title_uniqueness(self):
-        Book.objects.create(title='A', author='Me')
+        """
+        Ensure no duplicate titles are created
+        """
+        Book.objects.create(title="A", author="Me")
 
         with self.assertRaises(IntegrityError):
-            Book.objects.create(title='A', author='Her')
+            Book.objects.create(title="A", author="Her")
 
 
 class BookAPITest(APITestCase):
@@ -29,7 +32,9 @@ class BookAPITest(APITestCase):
     def setUpClass(cls):
         super(BookAPITest, cls).setUpClass()
 
-        cls.book = create_test_book(title="Black Leopard", author="Marlon", book_type=Book.FICTION)
+        cls.book = create_test_book(
+            title="Black Leopard", author="Marlon", book_type=Book.FICTION
+        )
         create_test_book(
             title="Intro to Python",
             author="Dennis",
@@ -59,7 +64,11 @@ class BookAPITest(APITestCase):
     def test_create_book_with_existing_title_fails(self):
         create_book_url = reverse("book_list")
 
-        book_info = {"title": self.book.title, "author": "Helen", "book_type": Book.NOVEL}
+        book_info = {
+            "title": self.book.title,
+            "author": "Helen",
+            "book_type": Book.NOVEL,
+        }
 
         response = self.client.post(create_book_url, data=book_info, format="json")
 
