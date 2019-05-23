@@ -6,7 +6,7 @@ More info on the API can be found in the [docs](http://35.196.160.21:8001/)
 
 [![CircleCI](https://circleci.com/gh/dennynganga/koko_book_store/tree/master.svg?style=svg&circle-token=9ebe3998c371b29a3d007394566d9831a1033ada)](https://circleci.com/gh/dennynganga/koko_book_store/tree/master)
 
-## Installation
+## Simple Installation
 
 -  Clone this repo. You might want to do this in a virtual environment (See [more on virtualenv](https://virtualenv.pypa.io/en/latest/))
 ```bash
@@ -26,8 +26,10 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 Please make sure to update tests as appropriate.
 
-## Deployment Steps
--
+## Deployment Steps (using Circle CI, Docker Hub and a Google VM)
+- First step involves running the tests on CCI. If all pass and we're on the master branch, we proceed to the publish job.
+- In the publish job, a docker image is built with a unique tag (hash of the git commit that triggered the CI build).
+- From Docker Hub, the application is then deployed to the VM. The latest image is pulled from Docker Hub, current one is stopped and is removed from the VM, then runs a container based on the latest image.
 
 ## Scaling the service
  - ##### Data Layer
@@ -41,4 +43,6 @@ Please make sure to update tests as appropriate.
  Moving session storage to a faster, in-memory caching tool like redis or memcached, to avoid database hits while reading and writing session data.
  - ##### Running long computations offline
  Computations that take long to run should not be performed in the normal request-response cycle, so as to reduce page load times. In our case, an example would be sending a reminder email to a customer, or even generating a large CSV file that shows all active rentals. Such long-running tasks can be delegated to multiple workers. **Celery** (in combination with redis or rabbitmq) would come in handy in this.
+ - ##### Caching Data on clients
+ It might also be useful to cache data on clients e.g smart phone app so as to reduce the number of requests sent to the servers. In turn, the servers will benefit from this technique.
  
