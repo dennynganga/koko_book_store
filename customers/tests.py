@@ -1,3 +1,4 @@
+from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -8,6 +9,15 @@ from customers.models import Customer
 from customers.serializers import CustomerSerializer
 from customers.utils import create_test_user
 from koko_book_store.constants import CURRENCY
+
+
+class CustomerModelTest(TestCase):
+    def test_string_representation(self):
+        """
+        Ensure that string representation of a Customer object is correct
+        """
+        customer = Customer(first_name="Mike", last_name="Kim")
+        self.assertEqual(str(customer), "{} {}".format(customer.first_name, customer.last_name))
 
 
 class CustomerAPITest(APITestCase):

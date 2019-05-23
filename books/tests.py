@@ -1,3 +1,4 @@
+from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -5,6 +6,15 @@ from rest_framework.test import APITestCase
 from books.models import Book
 from books.serializers import BookSerializer
 from books.utils import create_test_book
+
+
+class BookModelTest(TestCase):
+    def test_string_representation(self):
+        """
+        Ensure that string representation of a Book object is correct
+        """
+        book = Book(title="Goosebumps", author="Sidney")
+        self.assertEqual(str(book), book.title)
 
 
 class BookAPITest(APITestCase):
