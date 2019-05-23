@@ -17,7 +17,7 @@ class Book(models.Model):
 
     BOOK_TYPES = ((REGULAR, "Regular"), (FICTION, "Fiction"), (NOVEL, "Novel"))
 
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, unique=True)
     author = models.CharField(max_length=100)
 
     book_type = models.CharField(max_length=2, choices=BOOK_TYPES, default=REGULAR)

@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -16,13 +17,19 @@ class BookModelTest(TestCase):
         book = Book(title="Goosebumps", author="Sidney")
         self.assertEqual(str(book), book.title)
 
+    def test_title_uniqueness(self):
+        Book.objects.create(title='A', author='Me')
+
+        with self.assertRaises(IntegrityError):
+            Book.objects.create(title='A', author='Her')
+
 
 class BookAPITest(APITestCase):
     @classmethod
     def setUpClass(cls):
         super(BookAPITest, cls).setUpClass()
 
-        create_test_book(title="Black Leopard", author="Marlon", book_type=Book.FICTION)
+        cls.book = create_test_book(title="Black Leopard", author="Marlon", book_type=Book.FICTION)
         create_test_book(
             title="Intro to Python",
             author="Dennis",
@@ -47,6 +54,16 @@ class BookAPITest(APITestCase):
         self.assertEqual(Book.objects.count(), 4)
         self.assertEqual(Book.objects.get(pk=4).title, book_info["title"])
         self.assertEqual(Book.objects.get(pk=4).author, book_info["author"])
+        self.assertEqual(Book.objects.get(pk=4).book_type, book_info["book_type"])
+
+    def test_create_book_with_existing_title_fails(self):
+        create_book_url = reverse("book_list")
+
+        book_info = {"title": self.book.title, "author": "Helen", "book_type": Book.NOVEL}
+
+        response = self.client.post(create_book_url, data=book_info, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_update_book_valid_payload(self):
         """
@@ -100,7 +117,7 @@ class BookAPITest(APITestCase):
             "title": "Intro to Python",
             "author": "Dennis",
             "rental_status": "Rented Out",
-            "book_type": "Regular",
+            "book_type": "R",
         }
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

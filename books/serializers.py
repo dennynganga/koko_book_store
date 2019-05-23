@@ -8,7 +8,6 @@ class BookSerializer(serializers.ModelSerializer):
     rental_status = serializers.CharField(
         source="get_rental_status_display", read_only=True
     )
-    book_type = serializers.CharField(source="get_book_type_display", read_only=True)
 
     class Meta:
         model = Book
